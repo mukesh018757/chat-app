@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Chat App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Join screen shown first -->
+    <section id="joinScreen" class="card">
+      <h1>College Chat Room</h1>
+      <p>Enter your name and choose a room to start chatting.</p>
+
+      <input id="nameInput" type="text" placeholder="Your name" />
+      <input id="roomInput" type="text" placeholder="Room name" />
+      <button id="joinButton">Join Room</button>
+    </section>
+
+    <!-- Chat screen hidden until user joins -->
+    <section id="chatScreen" class="chat-app hidden">
+      <header class="chat-header">
+        <div>
+          <h2 id="roomTitle">Room</h2>
+          <p id="userTitle">You are online</p>
+        </div>
+        <button id="leaveButton">Leave Room</button>
+      </header>
+
+      <div class="chat-body">
+        <!-- Messages area -->
+        <main class="messages-panel">
+          <div id="messages" class="messages"></div>
+          <div id="typingIndicator" class="typing-indicator"></div>
+          <form id="messageForm" class="message-form">
+            <input id="messageInput" type="text" placeholder="Type a message..." autocomplete="off" />
+            <button type="submit">Send</button>
+          </form>
+        </main>
+
+        <!-- Sidebar with online users -->
+        <aside class="users-panel">
+          <h3>Online Users</h3>
+          <ul id="userList"></ul>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
