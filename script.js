@@ -21,10 +21,15 @@ let currentRoom = '';
 let currentName = '';
 let typingTimer;
 
+// Ensure chat screen is hidden until the user joins.
+chatScreen.classList.add('hidden');
+joinScreen.classList.remove('hidden');
+
 // Show the chat screen after joining a room.
 function showChatScreen() {
   joinScreen.classList.add('hidden');
   chatScreen.classList.remove('hidden');
+  chatScreen.style.display = '';
 }
 
 // Show the join screen again after leaving.
@@ -35,6 +40,8 @@ function showJoinScreen() {
   messagesBox.innerHTML = '';
   userList.innerHTML = '';
   typingIndicator.textContent = '';
+  currentRoom = '';
+  currentName = '';
 }
 
 // Add a message to the message box.
@@ -74,18 +81,20 @@ joinButton.addEventListener('click', () => {
 
   currentName = name;
   currentRoom = room;
-  roomTitle.textContent = room;
-  userTitle.textContent = `Hello, ${name}`;
+  joinButton.disabled = true;
+  joinButton.textContent = 'Joining...';
 
   socket.emit('join-room', { name, room });
-  showChatScreen();
 });
 
 // Send message form.
 messageForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  const message = messageInput.value.trim();
+  if (!currentRoom) {
+    return;
+  }
 
+  const message = messageInput.value.trim();
   if (!message) {
     return;
   }
@@ -111,7 +120,12 @@ messageInput.addEventListener('input', () => {
 
 // Leave room button.
 leaveButton.addEventListener('click', () => {
+  if (!currentRoom) {
+    return;
+  }
+
   socket.emit('leave-room', { room: currentRoom, name: currentName });
+  currentRoom = '';
   showJoinScreen();
 });
 
@@ -140,7 +154,20 @@ socket.on('stop-typing', () => {
   typingIndicator.textContent = '';
 });
 
+// Server error for room actions.
+socket.on('room-error', ({ message }) => {
+  alert(message);
+  currentRoom = '';
+  joinButton.disabled = false;
+  joinButton.textContent = 'Join Room';
+});
+
 // Let the server confirm that the room was joined.
 socket.on('joined-room', ({ room, name }) => {
+  roomTitle.textContent = room;
+  userTitle.textContent = `Hello, ${name}`;
+  showChatScreen();
+  joinButton.disabled = false;
+  joinButton.textContent = 'Join Room';
   addMessage({ sender: 'System', text: `You joined ${room} as ${name}`, time: '' }, true);
 });

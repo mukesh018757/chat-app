@@ -24,25 +24,15 @@ io.on('connection', (socket) => {
   socket.on('join-room', ({ name, room }) => {
     socket.join(room);
 
-    // Save the new user in the room list.
     if (!roomUsers[room]) {
       roomUsers[room] = [];
     }
 
-    // Remove old entries for this socket if the user reconnects.
     roomUsers[room] = roomUsers[room].filter((user) => user.id !== socket.id);
+    roomUsers[room].push({ id: socket.id, name });
 
-    roomUsers[room].push({ id: socket.id, name: name });
-
-    // Tell the user that the join was successful.
     socket.emit('joined-room', { room, name });
-
-    // Send a system message to everyone in the room.
-    io.to(room).emit('system-message', {
-      text: `${name} joined the room.`
-    });
-
-    // Send the updated online users list.
+    io.to(room).emit('system-message', { text: `${name} joined the room.` });
     io.to(room).emit('room-users', roomUsers[room]);
   });
 

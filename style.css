@@ -64,6 +64,10 @@ button:hover {
   display: none;
 }
 
+#chatScreen.hidden {
+  display: none !important;
+}
+
 /* Chat screen layout */
 .chat-app {
   display: flex;
