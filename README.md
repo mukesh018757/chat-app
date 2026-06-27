@@ -97,4 +97,6 @@ managing connected users on the server side.
 
 ## Output
 
-![Chat App Output](PASTE_YOUR_IMAGE_URL_HERE)
+<img width="1348" height="848" alt="Image" src="https://github.com/user-attachments/assets/1c6effd5-5968-460c-b869-1daddec7227c" />
+<img width="1351" height="812" alt="Image" src="https://github.com/user-attachments/assets/f6a84adb-355d-45ec-8042-9232ec3d41fe" />
+<img width="1318" height="797" alt="Image" src="https://github.com/user-attachments/assets/788a49aa-46ac-4ed1-8afd-237f89e5d613" />
