@@ -1,7 +1,7 @@
 // This file handles the client-side chat logic.
 // It connects to the Socket.io server and updates the UI.
 
-const socket = io();
+const socket = io("https://chat-app-kh4w.onrender.com");
 
 const joinScreen = document.getElementById('joinScreen');
 const chatScreen = document.getElementById('chatScreen');
