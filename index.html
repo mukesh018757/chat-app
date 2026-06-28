@@ -4,44 +4,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Campus Connect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
-    <!-- Join screen shown first -->
     <section id="joinScreen" class="card">
-      <h1>Campus Connect</h1>
-      <p>Enter your name and choose a room to start chatting.</p>
+      <div class="brand-badge">Campus Connect</div>
+      <h1>Welcome to the campus chat</h1>
+      <p>Join a room and connect with your classmates instantly.</p>
 
-      <input id="nameInput" type="text" placeholder="Your name" />
-      <input id="roomInput" type="text" placeholder="Room name" />
-      <button id="joinButton">Join Room</button>
+      <div class="inputs">
+        <input id="nameInput" type="text" placeholder="Your name" />
+        <input id="roomInput" type="text" placeholder="Room name" />
+      </div>
+      <button id="joinButton">
+        <span>Join Room</span>
+        <span class="btn-icon">➤</span>
+      </button>
     </section>
 
-    <!-- Chat screen hidden until user joins -->
     <section id="chatScreen" class="chat-app hidden" style="display: none;">
       <header class="chat-header">
-        <div>
-          <h2 id="roomTitle">Room</h2>
+        <div class="header-copy">
+          <div class="header-title-row">
+            <h2 id="roomTitle">Room</h2>
+            <span class="status-pill"><span class="status-dot"></span>Live</span>
+          </div>
           <p id="userTitle">You are online</p>
         </div>
-        <button id="leaveButton">Leave Room</button>
+        <button id="leaveButton">
+          <span>Leave Room</span>
+        </button>
       </header>
 
       <div class="chat-body">
-        <!-- Messages area -->
         <main class="messages-panel">
           <div id="messages" class="messages"></div>
           <div id="typingIndicator" class="typing-indicator"></div>
           <form id="messageForm" class="message-form">
             <input id="messageInput" type="text" placeholder="Type a message..." autocomplete="off" />
-            <button type="submit">Send</button>
+            <button type="submit" aria-label="Send message">
+              <span class="btn-icon">➤</span>
+            </button>
           </form>
         </main>
 
-        <!-- Sidebar with online users -->
         <aside class="users-panel">
-          <h3>Online Users</h3>
+          <div class="users-panel-header">
+            <h3>Online Users</h3>
+            <span class="users-chip">Live</span>
+          </div>
           <ul id="userList"></ul>
         </aside>
       </div>
@@ -50,5 +65,90 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
+  <script>
+    const decorateChatUi = () => {
+      const messagesBox = document.getElementById('messages');
+      const userList = document.getElementById('userList');
+      const typingIndicator = document.getElementById('typingIndicator');
+      if (!messagesBox || !userList || !typingIndicator) return;
+
+      const createInitials = (name) => {
+        if (!name) return 'U';
+        return name
+          .trim()
+          .split(/\s+/)
+          .slice(0, 2)
+          .map((part) => part[0])
+          .join('')
+          .toUpperCase();
+      };
+
+      const decorateUserItems = () => {
+        [...userList.querySelectorAll('li')].forEach((item) => {
+          if (item.querySelector('.user-avatar')) return;
+          const name = item.textContent.trim();
+          item.innerHTML = `
+            <span class="user-avatar">${createInitials(name)}</span>
+            <span class="user-name">${name}</span>
+            <span class="user-status-dot"></span>
+          `;
+        });
+      };
+
+      const decorateMessages = () => {
+        [...messagesBox.querySelectorAll('.message')].forEach((messageItem) => {
+          if (messageItem.querySelector('.message-avatar')) return;
+          const senderEl = messageItem.querySelector('.sender');
+          const senderName = senderEl ? senderEl.textContent.trim() : '';
+          const contentEl = messageItem.querySelector('div:last-of-type');
+          const isMine = senderName && typeof currentName !== 'undefined' && senderName === currentName;
+
+          messageItem.classList.add(isMine ? 'mine' : 'other');
+          messageItem.innerHTML = `
+            <div class="message-avatar">${createInitials(senderName || 'U')}</div>
+            <div class="message-content">
+              <div class="message-meta">
+                <span class="sender">${senderName}</span>
+                <span class="time">${messageItem.querySelector('.time')?.textContent || ''}</span>
+              </div>
+              <div class="message-text">${contentEl ? contentEl.innerHTML : ''}</div>
+            </div>
+          `;
+        });
+      };
+
+      const observeTyping = () => {
+        const renderTyping = () => {
+          const text = typingIndicator.textContent.trim();
+          if (!text) {
+            typingIndicator.innerHTML = '';
+            return;
+          }
+          typingIndicator.innerHTML = `
+            <span class="typing-label">${text}</span>
+            <span class="typing-dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+          `;
+        };
+
+        renderTyping();
+        const observer = new MutationObserver(renderTyping);
+        observer.observe(typingIndicator, { childList: true, characterData: true, subtree: true });
+      };
+
+      const observer = new MutationObserver(() => {
+        decorateUserItems();
+        decorateMessages();
+      });
+
+      observer.observe(messagesBox, { childList: true, subtree: true });
+      observeTyping();
+      decorateUserItems();
+      decorateMessages();
+    };
+
+    window.addEventListener('load', decorateChatUi);
+  </script>
 </body>
 </html>
