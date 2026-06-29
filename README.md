@@ -100,7 +100,6 @@ managing connected users on the server side.
 ---
 
 ## Output
-
-<img width="1348" height="848" alt="Image" src="https://github.com/user-attachments/assets/1c6effd5-5968-460c-b869-1daddec7227c" />
-<img width="1351" height="812" alt="Image" src="https://github.com/user-attachments/assets/f6a84adb-355d-45ec-8042-9232ec3d41fe" />
-<img width="1318" height="797" alt="Image" src="https://github.com/user-attachments/assets/788a49aa-46ac-4ed1-8afd-237f89e5d613" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/adbf18b9-5cee-4ecb-8793-d6cda4110f28" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/71af7ceb-5a89-4475-a8b7-522b0d46c298" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/a797a7e5-8ca5-4942-a79b-c03e5cf4115e" />
